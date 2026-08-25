@@ -1,2 +1,4 @@
-# Predator-Prey-Thesis
-My Master Thesis
+# Predator-Prey Thesis
+
+My master thesis explores learning predator-prey interactions from animal behavior videos. 
+

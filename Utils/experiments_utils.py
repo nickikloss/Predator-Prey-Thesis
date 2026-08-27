@@ -2,14 +2,10 @@
 experiments_utils.py
 
 References:
-Some of the analysis derived from: Wu et al. (2025) - Adversarial imitation learning with deep attention network for swarm systems (https://doi.org/10.1007/s40747-024-01662-2)
+Analysis derived from: Wu et al. (2025) - Adversarial imitation learning with deep attention network for swarm systems (https://doi.org/10.1007/s40747-024-01662-2)
 Heat maps: https://matplotlib.org/stable/gallery/images_contours_and_fields/pcolor_demo.html
 Heat maps: https://matplotlib.org/stable/users/explain/colors/colormapnorms.html
-That consistent "index 0 is the predator" convention is exactly where I'd flag two things:
 
-degree_of_sparsity is the one metric in this group that does not exclude index 0 — it computes nearest-neighbor distance over the full xs, ys including the predator. Given every other function here deliberately slices [1:] to keep the predator out of prey-swarm statistics, this looks like an oversight rather than an intentional choice — it means your sparsity numbers are quietly influenced by how close the predator happens to be to the swarm, which isn't what "swarm cohesion" is supposed to measure.
-
-More importantly: in sim_utils.py's get_state_tensors, all six of these metrics (compute_polarization, compute_angular_momentum, degree_of_sparsity, distance_to_predator, pred_distance_to_nearest_prey, escape_alignment) are called unconditionally, with no check for n_pred == 0. In a prey-only run — a Couzin-swarm baseline with no predator, which your codebase explicitly supports throughout (sim_utils.py, vec_sim_utils.py, and train_utils.py all branch on n_pred > 0) — combined would just be the prey log with nothing prepended, so xs[0]/ys[0] would be a real prey agent, not a predator. Every one of these metrics would then silently treat that first prey agent as "the predator": distance_to_predator and escape_alignment would report meaningless numbers, and compute_polarization/compute_angular_momentum would silently drop one legitimate prey agent from the swarm statistics. Since your project already has a documented history of exactly this shape of bug (the padding/flag/timebase issues in your project notes), and since a prey-only baseline is precisely the kind of run you'd use as a comparison point against your predator-inclusive results, this is worth checking directly — does anything in your pipeline currently call get_state_tensors with n_pred=0? If so, those metric values for that run are very likely wrong.
 Trajectory Plot (idea): https://www.researchgate.net/figure/Monte-Carlo-simulation-of-electron-trajectories-in-solid-TiC-red-lines-backscattered_fig3_334222567
 
 Wirtheim (2026) - Exploring Predator-Prey Dynamics from Videos using Generative Adversarial Imitation Learning

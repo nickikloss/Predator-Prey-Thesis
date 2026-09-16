@@ -1,4 +1,3 @@
-# Predator-Prey Thesis
+# Modeling Predator-Prey Interactions from Real Fish Videos: A Generative Adversarial Imitation Learning Approach
 
-My master thesis explores learning predator-prey interactions from animal behavior videos. 
-
+This thesis investigates whether predator-prey interactions, particularly pursuit and escape, can be recovered from real video recordings using imitation learning.
